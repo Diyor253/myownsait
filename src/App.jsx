@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Analytics } from '@vercel/analytics/react'
 import './App.css'
 
 const masters = [
@@ -242,7 +243,7 @@ function App() {
           <div className="calc-flex glass-effect">
             <div className="calc-inputs">
               <div className="input-group">
-                <label>Общая площадь: {area} м²</label>
+                <label>Общая ��лощадь: {area} м²</label>
                 <input type="range" min="5" max="300" value={area} onChange={(e) => setArea(e.target.value)} className="slider" />
               </div>
 
@@ -473,6 +474,7 @@ function App() {
       >
         ↑
       </button>
+      <Analytics />
     </div>
   )
 }
