@@ -177,10 +177,10 @@ function App() {
         <div className="container nav-content">
           <div className="logo-brand gradient-text">MASTERPORTAL</div>
           <div className="nav-links">
-            <a href="#ratings">Рейтинг</a>
+            <a href="#ratings">Мастера</a>
+            <a href="#advantages">Преимущества</a>
             <a href="#calc">Калькулятор</a>
-            <a href="#process">Процесс</a>
-            <a href="#portfolio">Портфолио</a>
+            <a href="#portfolio">Идеи</a>
             <a href="#contact" className="btn-primary" style={{ padding: '0.6rem 1.5rem', marginLeft: '1rem' }}>Связаться</a>
           </div>
         </div>
@@ -194,6 +194,56 @@ function App() {
           <p className="hero-subtitle">Найди профессионалов от демонтажа до финального декора. Проверенные отзывы и честные цены.</p>
           <div className="hero-btns">
             <a href="#calc" className="btn-primary">Начать расчет</a>
+          </div>
+        </div>
+      </section>
+      {/* Stats Bar */}
+      <section className="stats-bar glass-effect">
+        <div className="container stats-flex">
+          <div className="stat-item">
+            <span className="stat-num">150+</span>
+            <span className="stat-desc">Проверенных мастеров</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-num">1200+</span>
+            <span className="stat-desc">Выполненных проектов</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-num">3 года</span>
+            <span className="stat-desc">Средняя гарантия</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-num">4.9/5</span>
+            <span className="stat-desc">Средний рейтинг</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Advantages */}
+      <section id="advantages" className="section-padding advantages-section">
+        <div className="container">
+          <h2 className="section-title text-center">Почему MASTERPORTAL?</h2>
+          <div className="advantages-grid">
+            <div className="adv-card glass-effect">
+              <div className="adv-icon">📜</div>
+              <h4>Официальный договор</h4>
+              <p>Все работы фиксируются юридически. Сроки и стоимость не меняются в процессе.</p>
+            </div>
+            <div className="adv-card glass-effect">
+              <div className="adv-icon">🛠️</div>
+              <h4>Тройной контроль качества</h4>
+              <p>Наши инженеры проверяют каждый этап работ на соответствие СНиП и ГОСТ.</p>
+            </div>
+            <div className="adv-card glass-effect">
+              <div className="adv-icon">💰</div>
+              <h4>Прозрачная смета</h4>
+              <p>Вы точно знаете, за что платите. Детализация до каждого гвоздя и мешка смеси.</p>
+            </div>
+            <div className="adv-card glass-effect">
+              <div className="adv-icon">⏱️</div>
+              <h4>Соблюдение сроков</h4>
+              <p>За каждый день просрочки выплачиваем компенсацию, прописанную в договоре.</p>
+            </div>
           </div>
         </div>
       </section>
@@ -231,6 +281,68 @@ function App() {
                 <button className="btn-outline" onClick={() => setSelectedMaster(c)}>О компании</button>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Brands & Partners */}
+      <section className="brands-bar glass-effect">
+        <div className="container brands-flex">
+          <span className="brand-label">Доверяем качеству:</span>
+          <div className="brands-logos">
+            <span className="brand-logo">KNAUF</span>
+            <span className="brand-logo">LEGRAND</span>
+            <span className="brand-logo">CERESIT</span>
+            <span className="brand-logo">TECE</span>
+            <span className="brand-logo">REHAU</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Detailed Services Grid */}
+      <section id="services" className="section-padding services-grid-section">
+        <div className="container">
+          <h2 className="section-title text-center">Все виды услуг</h2>
+          <div className="services-detailed-grid">
+            <div className="service-card glass-effect">
+              <div className="s-header">
+                <span className="s-icon">🏠</span>
+                <h4>Ремонт "под ключ"</h4>
+              </div>
+              <ul>
+                <li>Разработка дизайн-проекта</li>
+                <li>Черновые и чистовые работы</li>
+                <li>Закупка и доставка материалов</li>
+                <li>Клининг после ремонта</li>
+              </ul>
+              <a href="#contact" className="btn-outline" style={{ marginTop: '1.5rem', display: 'inline-block', textDecoration: 'none', textAlign: 'center' }}>Узнать подробнее</a>
+            </div>
+            <div className="service-card glass-effect">
+              <div className="s-header">
+                <span className="s-icon">🏗️</span>
+                <h4>Перепланировка</h4>
+              </div>
+              <ul>
+                <li>Демонтаж перегородок</li>
+                <li>Возведение новых стен</li>
+                <li>Усиление проемов</li>
+                <li>Согласование документов</li>
+              </ul>
+              <a href="#contact" className="btn-outline" style={{ marginTop: '1.5rem', display: 'inline-block', textDecoration: 'none', textAlign: 'center' }}>Узнать подробнее</a>
+            </div>
+            <div className="service-card glass-effect">
+              <div className="s-header">
+                <span className="s-icon">🔌</span>
+                <h4>Инженерные сети</h4>
+              </div>
+              <ul>
+                <li>Электромонтаж по проекту</li>
+                <li>Водоснабжение и отопление</li>
+                <li>Вентиляция и кондиционирование</li>
+                <li>Монтаж систем "Умный дом"</li>
+              </ul>
+              <a href="#contact" className="btn-outline" style={{ marginTop: '1.5rem', display: 'inline-block', textDecoration: 'none', textAlign: 'center' }}>Узнать подробнее</a>
+            </div>
           </div>
         </div>
       </section>
@@ -379,6 +491,17 @@ function App() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* CTA Banner */}
+      <section className="cta-banner" style={{ marginBottom: '4rem' }}>
+        <div className="container cta-flex glass-effect" style={{ padding: '4rem', borderRadius: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '2rem' }}>
+          <div className="cta-text">
+            <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Готовы начать ремонт мечты?</h2>
+            <p style={{ opacity: 0.8, fontSize: '1.2rem' }}>Закажите бесплатный выезд замерщика и получите точную смету уже завтра!</p>
+          </div>
+          <a href="#contact" className="btn-primary" style={{ padding: '1.2rem 3.5rem', fontSize: '1.1rem', textDecoration: 'none' }}>Записаться на замер</a>
         </div>
       </section>
 
