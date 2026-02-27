@@ -166,7 +166,7 @@ function App() {
                   </div>
                 ))}
               </div>
-              <button className="btn-primary" style={{ width: '100%', marginTop: '2rem' }}>Нанять мастера</button>
+              <a href="#contact" className="btn-primary" style={{ display: 'block', textAlign: 'center', textDecoration: 'none', marginTop: '2rem' }} onClick={() => setSelectedMaster(null)}>Нанять мастера</a>
             </div>
           </div>
         </div>
@@ -276,7 +276,7 @@ function App() {
                 <p>Выбрано работ: {selectedWorks.length}</p>
                 <p>Базовая цена: ~{Math.round(total / area).toLocaleString()} ₽/м²</p>
               </div>
-              <button className="btn-primary full-width">Заказать смету мастера</button>
+              <a href="#contact" className="btn-primary full-width" style={{ textAlign: 'center', textDecoration: 'none' }}>Заказать смету мастера</a>
             </div>
           </div>
         </div>
@@ -469,7 +469,6 @@ function App() {
       <button
         className="back-to-top glass-effect"
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        style={{ position: 'fixed', bottom: '2rem', right: '2rem', width: '50px', height: '50px', borderRadius: '50%', border: '1px solid var(--glass-border)', cursor: 'pointer', zIndex: 1000 }}
       >
         ↑
       </button>
