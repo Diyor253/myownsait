@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 
 const masters = [
@@ -96,6 +96,59 @@ const workCategories = [
   { id: 'demo', title: 'Демонтаж', price: 400, icon: '🔨' }
 ]
 
+const BeforeAfterSlider = ({ before, after }) => {
+  const [sliderPos, setSliderPos] = useState(50)
+  const [containerWidth, setContainerWidth] = useState(0)
+  const containerRef = useRef(null)
+
+  useEffect(() => {
+    if (containerRef.current) {
+      setContainerWidth(containerRef.current.offsetWidth)
+    }
+    const handleResize = () => {
+      if (containerRef.current) setContainerWidth(containerRef.current.offsetWidth)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  const handleMove = (e) => {
+    if (!containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    const xPos = e.clientX || (e.touches && e.touches[0].clientX)
+    if (!xPos) return
+    const x = ((xPos - rect.left) / rect.width) * 100
+    setSliderPos(Math.max(0, Math.min(100, x)))
+  }
+
+  return (
+    <div
+      ref={containerRef}
+      className="ba-slider"
+      onMouseMove={handleMove}
+      onTouchMove={handleMove}
+      style={{ cursor: 'col-resize' }}
+    >
+      <div className="ba-after">
+        <img src={after} alt="После" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      </div>
+      <div className="ba-before" style={{ width: `${sliderPos}%`, borderRight: '3px solid var(--accent-gold)' }}>
+        <img
+          src={before}
+          alt="До"
+          style={{
+            width: containerWidth ? `${containerWidth}px` : '100%',
+            height: '400px',
+            objectFit: 'cover',
+            maxWidth: 'none'
+          }}
+        />
+      </div>
+      <div className="ba-handle" style={{ left: `${sliderPos}%` }}></div>
+    </div>
+  )
+}
+
 function App() {
   const [area, setArea] = useState(50)
   const [type, setType] = useState('standard')
@@ -103,9 +156,30 @@ function App() {
   const [total, setTotal] = useState(0)
   const [activeTab, setActiveTab] = useState('masters')
   const [selectedMaster, setSelectedMaster] = useState(null)
-  const [formStatus, setFormStatus] = useState('idle') // idle, sending, success
+  const [formStatus, setFormStatus] = useState('idle')
   const [formData, setFormData] = useState({ name: '', phone: '', task: '' })
 
+  // NEW STATES
+  const [searchQuery, setSearchQuery] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState('Все')
+  const [isDarkTheme, setIsDarkTheme] = useState(true)
+  const [showRegModal, setShowRegModal] = useState(false)
+
+  // Scroll Reveal Observer
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('active')
+      })
+    }, { threshold: 0.1 })
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
+    return () => observer.disconnect()
+  }, [])
+
+  // Theme Toggle Effect
+  useEffect(() => {
+    document.body.className = isDarkTheme ? '' : 'light-theme'
+  }, [isDarkTheme])
   const handleContactSubmit = (e) => {
     e.preventDefault()
     setFormStatus('sending')
@@ -172,6 +246,29 @@ function App() {
         </div>
       )}
 
+      {/* Theme Toggle */}
+      <button className="theme-toggle floating" onClick={() => setIsDarkTheme(!isDarkTheme)}>
+        {isDarkTheme ? '☀️' : '🌙'}
+      </button>
+
+      {/* Registration Modal */}
+      {showRegModal && (
+        <div className="modal-overlay" onClick={() => setShowRegModal(false)}>
+          <div className="modal-content glass-effect" onClick={e => e.stopPropagation()}>
+            <button className="close-btn" onClick={() => setShowRegModal(false)}>&times;</button>
+            <h2 className="section-title text-center">Стать мастером портала</h2>
+            <p className="text-center" style={{ marginBottom: '2rem' }}>Заполните анкету, и мы свяжемся с вами для верификации профиля.</p>
+            <form className="contact-form-side" style={{ background: 'transparent', padding: 0 }} onSubmit={(e) => { e.preventDefault(); setShowRegModal(false); alert('Заявка принята! Мы свяжемся с вами.'); }}>
+              <div className="form-group"><input type="text" placeholder="ФИО или Название компании" required /></div>
+              <div className="form-group"><input type="text" placeholder="Специализация" required /></div>
+              <div className="form-group"><input type="tel" placeholder="Телефон" required /></div>
+              <div className="form-group"><textarea placeholder="Расскажите о своем опыте"></textarea></div>
+              <button type="submit" className="btn-primary full-width">Отправить анкету</button>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Navbar */}
       <nav className="navbar glass-effect sticky">
         <div className="container nav-content">
@@ -181,13 +278,14 @@ function App() {
             <a href="#advantages">Преимущества</a>
             <a href="#calc">Калькулятор</a>
             <a href="#portfolio">Идеи</a>
-            <a href="#contact" className="btn-primary" style={{ padding: '0.6rem 1.5rem', marginLeft: '1rem' }}>Связаться</a>
+            <button className="btn-outline" style={{ width: 'auto', border: 'none', color: 'var(--accent-gold)' }} onClick={() => setShowRegModal(true)}>Вход для мастеров</button>
+            <a href="#contact" className="btn-primary" style={{ padding: '0.6rem 1.5rem' }}>Связаться</a>
           </div>
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="hero-section">
+      <section className="hero-section reveal">
         <div className="hero-overlay"></div>
         <div className="container hero-content">
           <h1 className="hero-title">Мастера твоего <br /><span className="gradient-text">нового дома</span></h1>
@@ -198,7 +296,7 @@ function App() {
         </div>
       </section>
       {/* Stats Bar */}
-      <section className="stats-bar glass-effect">
+      <section className="stats-bar glass-effect reveal">
         <div className="container stats-flex">
           <div className="stat-item">
             <span className="stat-num">150+</span>
@@ -220,7 +318,7 @@ function App() {
       </section>
 
       {/* Advantages */}
-      <section id="advantages" className="section-padding advantages-section">
+      <section id="advantages" className="section-padding advantages-section reveal">
         <div className="container">
           <h2 className="section-title text-center">Почему MASTERPORTAL?</h2>
           <div className="advantages-grid">
@@ -249,38 +347,63 @@ function App() {
       </section>
 
       {/* Ratings */}
-      <section id="ratings" className="section-padding ratings-section">
+      <section id="ratings" className="section-padding ratings-section reveal">
         <div className="container">
           <h2 className="section-title text-center">Профи в твоем районе</h2>
+
+          <div className="search-filter-container">
+            <div className="search-bar">
+              <input
+                type="text"
+                placeholder="Поиск по имени или специализации..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <div className="filter-bar">
+              {['Все', 'Плиточник', 'Дизайнер', 'Электрик', 'Маляр', 'Ремонт'].map(cat => (
+                <button
+                  key={cat}
+                  className={`filter-chip ${categoryFilter === cat ? 'active' : ''}`}
+                  onClick={() => setCategoryFilter(cat)}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="tabs text-center">
             <button className={activeTab === 'masters' ? 'tab-btn active' : 'tab-btn'} onClick={() => setActiveTab('masters')}>Мастера</button>
             <button className={activeTab === 'companies' ? 'tab-btn active' : 'tab-btn'} onClick={() => setActiveTab('companies')}>Компании</button>
           </div>
 
           <div className="rating-grid">
-            {activeTab === 'masters' ? masters.map(m => (
-              <div key={m.id} className="rating-card glass-effect hover-trigger">
-                <img src={m.img} alt={m.name} className="card-img" />
-                <h3>{m.name}</h3>
-                <p className="specialty">{m.specialty}</p>
-                <div className="stats">
-                  <span>⭐ {m.rating}</span>
-                  <span>🔧 {m.jobs} работ</span>
+            {(activeTab === 'masters' ? masters : companies)
+              .filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  item.specialty.toLowerCase().includes(searchQuery.toLowerCase());
+                const matchesCategory = categoryFilter === 'Все' || item.specialty.includes(categoryFilter);
+                return matchesSearch && matchesCategory;
+              })
+              .map(item => (
+                <div key={item.id} className="rating-card glass-effect hover-trigger">
+                  {item.img ? (
+                    <img src={item.img} alt={item.name} className="card-img" />
+                  ) : (
+                    <div className="logo-placeholder">{item.logo}</div>
+                  )}
+                  <h3>{item.name}</h3>
+                  <p className="specialty">{item.specialty}</p>
+                  <div className="stats">
+                    <span>⭐ {item.rating}</span>
+                    <span>{item.img ? '🔧' : '🏗️'} {item.jobs} {item.img ? 'работ' : 'объектов'}</span>
+                  </div>
+                  <button className="btn-outline" onClick={() => setSelectedMaster(item)}>
+                    {item.img ? 'Открыть профиль' : 'О компании'}
+                  </button>
                 </div>
-                <button className="btn-outline" onClick={() => setSelectedMaster(m)}>Открыть профиль</button>
-              </div>
-            )) : companies.map(c => (
-              <div key={c.id} className="rating-card glass-effect hover-trigger">
-                <div className="logo-placeholder">{c.logo}</div>
-                <h3>{c.name}</h3>
-                <p className="specialty">{c.specialty}</p>
-                <div className="stats">
-                  <span>⭐ {c.rating}</span>
-                  <span>🏗️ {c.jobs} объектов</span>
-                </div>
-                <button className="btn-outline" onClick={() => setSelectedMaster(c)}>О компании</button>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       </section>
@@ -348,7 +471,7 @@ function App() {
       </section>
 
       {/* Advanced Calculator */}
-      <section id="calc" className="section-padding calc-section">
+      <section id="calc" className="section-padding calc-section reveal">
         <div className="container">
           <h2 className="section-title text-center">Детальный расчет проекта</h2>
           <div className="calc-flex glass-effect">
@@ -382,22 +505,44 @@ function App() {
             </div>
 
             <div className="calc-result">
-              <div className="result-label">Итоговая оценка</div>
+              <div className="result-label">Предварительная смета</div>
               <div className="result-value">{total.toLocaleString()} ₽</div>
+
+              <div className="calc-metrics">
+                <div className="metric-box">
+                  <span className="metric-label">Работа</span>
+                  <span className="metric-val">{Math.round(total * 0.6).toLocaleString()} ₽</span>
+                </div>
+                <div className="metric-box">
+                  <span className="metric-label">Материалы</span>
+                  <span className="metric-val">{Math.round(total * 0.4).toLocaleString()} ₽</span>
+                </div>
+              </div>
+
               <div className="calc-summary">
                 <p>Выбрано работ: {selectedWorks.length}</p>
-                <p>Базовая цена: ~{Math.round(total / area).toLocaleString()} ₽/м²</p>
+                <p>Средняя цена: ~{Math.round(total / area).toLocaleString()} ₽/м²</p>
+                <p>Примерный срок: {Math.max(14, Math.round(area / 2))} дней</p>
               </div>
-              <a href="#contact" className="btn-primary full-width" style={{ textAlign: 'center', textDecoration: 'none' }}>Заказать смету мастера</a>
+              <button className="btn-primary full-width" onClick={() => window.print()}>Скачать PDF смету</button>
             </div>
           </div>
         </div>
       </section>
 
       {/* Portfolio Gallery */}
-      <section id="portfolio" className="section-padding portfolio-section">
+      <section id="portfolio" className="section-padding portfolio-section reveal">
         <div className="container">
           <h2 className="section-title">Вдохновение для ремонта</h2>
+
+          <div style={{ marginBottom: '4rem' }}>
+            <h3 style={{ marginBottom: '1.5rem', color: 'var(--accent-gold)' }}>Пример нашего качества: До и После</h3>
+            <BeforeAfterSlider
+              before="https://images.unsplash.com/photo-1541123437809-9fd12bd0813d?auto=format&fit=crop&q=80&w=1200"
+              after="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1200"
+            />
+          </div>
+
           <div className="portfolio-grid-masonry">
             <div className="p-item glass-effect tall">
               <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=800" alt="Living Room Gallery" />
@@ -432,7 +577,7 @@ function App() {
       </section>
 
       {/* How it Works */}
-      <section id="process" className="section-padding bg-darker">
+      <section id="process" className="section-padding bg-darker reveal">
         <div className="container">
           <div className="text-center mb-5">
             <h2 className="section-title">Как мы работаем</h2>
@@ -464,7 +609,7 @@ function App() {
       </section>
 
       {/* Testimonials */}
-      <section className="section-padding">
+      <section className="section-padding reveal">
         <div className="container">
           <h2 className="section-title text-center">Отзывы клиентов</h2>
           <div className="testimonials-grid">
@@ -495,7 +640,7 @@ function App() {
       </section>
 
       {/* CTA Banner */}
-      <section className="cta-banner" style={{ marginBottom: '4rem' }}>
+      <section className="cta-banner reveal" style={{ marginBottom: '4rem' }}>
         <div className="container cta-flex glass-effect" style={{ padding: '4rem', borderRadius: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '2rem' }}>
           <div className="cta-text">
             <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Готовы начать ремонт мечты?</h2>
@@ -506,7 +651,7 @@ function App() {
       </section>
 
       {/* FAQ & Contact */}
-      <section id="contact" className="section-padding bg-darker">
+      <section id="contact" className="section-padding bg-darker reveal">
         <div className="container">
           <div className="faq-contact-grid">
             <div className="faq-side">
@@ -564,7 +709,7 @@ function App() {
         </div>
       </section>
 
-      <footer className="footer section-padding">
+      <footer className="footer section-padding reveal">
         <div className="container">
           <div className="footer-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '3rem', marginBottom: '3rem' }}>
             <div className="footer-info">

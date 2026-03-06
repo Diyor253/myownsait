@@ -3,6 +3,7 @@
 :root {
   --bg-dark: #0a0a0b;
   --bg-card: #161618;
+  --bg-input: #1a1a1c;
   --accent-gold: #c5a059;
   --accent-gold-hover: #e3c081;
   --text-main: #ffffff;
@@ -12,6 +13,19 @@
   --glass-blur: blur(20px);
   --transition-smooth: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
   --shadow-premium: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.light-theme {
+  --bg-dark: #f0f2f5;
+  --bg-card: #ffffff;
+  --bg-input: #f8fafc;
+  --accent-gold: #b38a42;
+  --accent-gold-hover: #c5a059;
+  --text-main: #1a1a1b;
+  --text-muted: #64748b;
+  --glass: rgba(0, 0, 0, 0.02);
+  --glass-border: rgba(0, 0, 0, 0.1);
+  --shadow-premium: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
 html {
@@ -105,4 +119,119 @@ button {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent-gold);
+}
+
+/* Utility for hidden elements to animate on scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.theme-toggle {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  z-index: 1000;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  cursor: pointer;
+  background: var(--accent-gold);
+  color: var(--bg-dark);
+  box-shadow: 0 10px 20px rgba(197, 160, 89, 0.3);
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.floating {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Before After Slider Styling */
+.ba-slider {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  border-radius: 25px;
+  overflow: hidden;
+  user-select: none;
+  margin-top: 2rem;
+}
+
+.ba-after {
+  position: absolute;
+  inset: 0;
+}
+
+.ba-after img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ba-before {
+  position: absolute;
+  inset: 0;
+  width: 50%;
+  overflow: hidden;
+  z-index: 10;
+  border-right: 2px solid var(--accent-gold);
+}
+
+.ba-before img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+}
+
+.ba-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 4px;
+  background: var(--accent-gold);
+  z-index: 20;
+  cursor: col-resize;
+  transform: translateX(-50%);
+}
+
+.ba-handle::after {
+  content: '↔';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  background: var(--accent-gold);
+  border-radius: 50%;
+  color: var(--bg-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  box-shadow: 0 0 20px var(--accent-gold);
 }
